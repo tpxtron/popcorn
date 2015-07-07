@@ -1,0 +1,50 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}signup | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Signup{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}signup | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Signup{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if success %}
+				<div class="alert alert-success">Du erhältst in wenigen Augenblicken eine Mail mit einem Aktivierungslink!</div>
+			{% else %}
+				{% if error == "pwdontmatch" %}
+					<div class="alert alert-danger">Die eingegebenen Passwörter stimmen nicht überein.</div>
+				{% endif %}
+				{% if error == "pwtooshort" %}
+					<div class="alert alert-danger">Das von dir gewählte Passwort ist zu kurz.</div>
+				{% endif %}
+				{% if error == "invalidemail" %}
+					<div class="alert alert-danger">Die von dir eingebene Mailadresse ist keine sipgate-Mailadresse.</div>
+				{% endif %}
+				{% if error == "userexists" %}
+					<div class="alert alert-danger">Mit dieser Mailadresse gibt es bereits einen Benutzer.</div>
+				{% endif %}
+				<div class="panel panel-default">
+					<div class="panel-heading">Anmelden</div>
+					<div class="panel-body">
+						<form action="/signup" method="POST">
+							<div class="form-group">
+								<input type="email" placeholder="Email@sipgate.de" name="username" class="form-control" value="{{ username }}" />
+							</div>
+							<div class="form-group">
+								<input type="password" placeholder="Passwort (min. 8 Zeichen)" name="password" class="form-control" />
+							</div>
+							<div class="form-group">
+								<input type="password" placeholder="Password wiederholen" name="password_repeat" class="form-control" />
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary pull-right" type="submit">Anmelden</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

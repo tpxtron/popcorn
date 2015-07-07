@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}login | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Login{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}login | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Login{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if error %}
+				<div class="alert alert-danger">Die eingegebenen Zugangsdaten stimmen nicht.</div>
+			{% endif %}
+			<div class="panel panel-default">
+				<div class="panel-heading">Login</div>
+				<div class="panel-body">
+					<form action="/login" method="POST">
+						<div class="form-group">
+							<input type="email" placeholder="Email" name="username" class="form-control" value="{{ username }}" />
+						</div>
+						<div class="form-group">
+							<input type="password" placeholder="Passwort" name="password" class="form-control" />
+						</div>
+						<div class="form-group">
+							<button class="btn btn-primary pull-right" type="submit">Login</button>
+						</div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<a class="pull-left" href="/signup">Signup</a>
+					<a class="pull-right" href="/login/forgotpw">Passwort vergessen?</a>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+{% endblock %}

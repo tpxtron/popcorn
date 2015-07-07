@@ -1,0 +1,32 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}login | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Login{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}login | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Login{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if success %}
+				<div class="alert alert-success">Du hast ein neues Passwort per Mail erhalten!</div>
+			{% else %}
+				<div class="panel panel-default">
+					<div class="panel-heading">Zugangsdaten anfordern</div>
+					<div class="panel-body">
+						<form action="/login/forgotpw" method="POST">
+							<div class="form-group">
+								<input type="email" placeholder="Email" name="username" class="form-control" />
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary pull-right" type="submit">Zugangsdaten anfordern</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

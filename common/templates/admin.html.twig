@@ -1,0 +1,136 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}admin | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Admin{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}admin | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Admin{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12">
+			{% if success == "addMovie" %}
+				<div class="alert alert-success">Der Film wurde hinzugefügt!</div>
+			{% endif %}
+			{% if success == "updateMovie" %}
+				<div class="alert alert-success">Der Film wurde editiert!</div>
+			{% endif %}
+			{% if success == "deleteMovie" %}
+				<div class="alert alert-success">Der Film wurde gelöscht!</div>
+			{% endif %}
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Titel</th>
+						<th>Jahr</th>
+						<th>IMDb-ID</th>
+						<th>Vote</th>
+						<th>Aktion</th>
+					</tr>
+				</thead>
+				<tbody>
+					<form method="post" action="/admin">
+					<input type="hidden" name="action" value="addMovie" />
+					<tr>
+						<td>
+							<input type="text" name="title" placeholder="Titel" class="form-control" />
+						</td>
+						<td>
+							<input type="text" name="year" placeholder="Jahr" class="form-control" />
+						</td>
+						<td>
+							<input type="text" name="imdb_id" placeholder="IMDb-ID" class="form-control" />
+						</td>
+						<td></td>
+						<td>
+							<button type="submit" class="btn btn-default form-control">Hinzufügen!</button>
+						</td>
+					</tr>
+					</form>
+
+				{% for movie in movies %}
+					<tr id="movierow_{{ movie.id }}">
+						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
+						<td>{{ movie.year }}</td>
+						<td>{{ movie.imdb_id }}</td>
+						<td>{{ movie.vote }}</td>
+						<td>
+							<button class="btn btn-warning btn-edit" data-movie="{{ movie.id }}"><i class="fa fa-pencil"></i></button>
+							<button class="btn btn-danger btn-delete" data-movie="{{ movie.id }}"><i class="fa fa-trash-o"></i></button>
+							{% if movie.active == 1 %}
+								<button class="btn btn-primary btn-disable" data-movie="{{ movie.id }}"><i class="fa fa-times"></i></button>
+							{% else %}
+								<button class="btn btn-primary btn-ensable" data-movie="{{ movie.id }}"><i class="fa fa-check"></i></button>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="editModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Film Editieren</h4>
+				</div>
+				<form method="post" action="/admin">
+					<input type="hidden" name="action" value="updateMovie" />
+					<input type="hidden" name="id" value="" id="editModal_id" />
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="title">Titel:</label>
+							<input type="text" name="title" value="" class="form-control" id="editModal_title">
+						</div>
+						<div class="form-group">
+							<label for="year">Jahr</label>
+							<input type="text" name="year" value="" class="form-control" id="editModal_year">
+						</div>
+						<div class="form-group">
+							<label for="imdb_id">IMDb-ID</label>
+							<input type="text" name="imdb_id" value="" class="form-control" id="editModal_imdb_id">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+						<button type="submit" class="btn btn-primary">Speichern</button>
+					</div>
+				</form>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<div class="modal fade" id="deleteModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Film Löschen</h4>
+				</div>
+				<form method="post" action="/admin">
+					<input type="hidden" name="action" value="deleteMovie" />
+					<input type="hidden" name="id" value="" id="deleteModal_id" />
+					<div class="modal-body">
+						<p>Sicher?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+						<button type="submit" class="btn btn-primary">Löschen</button>
+					</div>
+				</form>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+<script src="/js/admin.js"></script>
+{% endblock %}

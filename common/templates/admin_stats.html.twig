@@ -1,0 +1,58 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}admin | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Admin{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}admin | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Admin{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12">
+			<h1>Top 10</h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th width="60%">Titel</th>
+						<th width="20%">Jahr</th>
+						<th width="20%">Vote</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for movie in top10movies %}
+					<tr id="movierow_{{ movie.id }}">
+						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
+						<td>{{ movie.year }}</td>
+						<td>{{ movie.vote }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<h1>Flop 10</h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th width="60%">Titel</th>
+						<th width="20%">Jahr</th>
+						<th width="20%">Vote</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for movie in flop10movies %}
+					<tr id="movierow_{{ movie.id }}">
+						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
+						<td>{{ movie.year }}</td>
+						<td>{{ movie.vote }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+<script src="/js/admin.js"></script>
+{% endblock %}

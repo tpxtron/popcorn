@@ -1,0 +1,88 @@
+
+header .navbar .navbar-header a.navbar-brand img {
+	height: 50px;
+	margin-top: -15px;
+}
+
+div.intro {
+	height: 80vh;
+	width: 100vw;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+div.intro img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+form.vote .form-group {
+	display: inline-block;
+	text-align: center;
+	margin-right: 10px;
+}
+
+.table-striped>tbody>tr.flash {
+	animation-duration: 1s;
+	-webkit-animation-duration: 1s;
+	-moz-animation-duration: 1s;
+	-o-animation-duration: 1s;
+	animation-fill-mode: both;
+	-webkit-animation-fill-mode: both;
+	-moz-animation-fill-mode: both;
+	-o-animation-fill-mode: both;
+
+}
+
+@-webkit-keyframes flashGrey {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #f9f9f9; }
+}
+@-moz-keyframes flashGrey {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #f9f9f9; }
+}
+@-o-keyframes flashGrey {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #f9f9f9; }
+}
+@keyframes flashGrey {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #f9f9f9; }
+}
+
+@-webkit-keyframes flash {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #ffffff; }
+}
+@-moz-keyframes flash {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #ffffff; }
+}
+@-o-keyframes flash {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #ffffff; }
+}
+@keyframes flash {
+	0%		{ background-color: #aaffaa; }
+	100%	{ background-color: #ffffff; }
+}
+
+.table-striped>tbody>tr.flash:nth-of-type(odd) {
+	animation-name: flashGrey;
+	-moz-animation-name: flashGrey;
+	-webkit-animation-name: flashGrey;
+	-o-animation-name: flashGrey;
+}
+.table-striped>tbody>tr.flash:nth-of-type(even) {
+	animation-name: flash;
+	-moz-animation-name: flash;
+	-webkit-animation-name: flash;
+	-o-animation-name: flash;
+}
+
+a.movie_inactive {
+	color: #888888;
+}

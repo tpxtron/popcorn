@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}signup | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Signup{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}signup | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Signup{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if success %}
+				<div class="alert alert-success">Dein Account wurde aktiviert. Du kannst dich jetzt <a href="/login">einloggen</a>!</div>
+			{% else %}
+				<div class="alert alert-danger">Der Aktivierungslink ist ungültig oder der Account wurde bereits aktiviert!</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
