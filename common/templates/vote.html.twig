@@ -10,6 +10,48 @@
 {% block content %}
 	<div class="row">
 		<div class="col-xs-12">
+			{% if success %}
+				<div class="alert alert-success">Danke! Wir kümmern uns... :-)</div>
+			{% endif %}
+			<hr />
+			<div class="text-center">
+				<h1>
+					Nächster Kinoabend:<br />
+					{% set weekdays = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"] %}
+					{% if nextDate|date("d.m.Y") == now|date("d.m.Y") %}
+						<strong class="red">HEUTE, 19:00 Uhr!</strong>
+					{% else %}
+						<strong>{{ attribute(weekdays,nextDate|date("w")) }}, {{ nextDate|date("d.m.Y") }}, 19:00 Uhr</strong>
+					{% endif %}
+				</h1>
+			</div>
+			<hr />
+			{% if nextDate|date("d.m.Y") == now|date("d.m.Y") %}
+				<div class="row">
+					<div class="col-xs-12 col-md-6 col-md-offset-3">
+						<h3 class="text-center">Die Top 10 für heute - noch geht alles!</h3>
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>Titel</th>
+									<th>Jahr</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for movie in top10movies %}
+								<tr id="movierow_{{ movie.id }}">
+									<td>
+										<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank">{{ movie.title }}</a>
+									</td>
+									<td>{{ movie.year }}</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<hr />
+			{% endif %}
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
@@ -27,6 +69,9 @@
 					<tr id="movierow_{{ movie.id }}">
 						<td>
 							<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank">{{ movie.title }}</a>
+							{% if movie.timestamp|date("U") > (now|date("U") - 604800) %}
+								<img src="/img/new.png" alt="NEW!" />
+							{% endif %}
 						</td>
 						<td>{{ movie.year }}</td>
 						<td class="text-center">
@@ -48,9 +93,23 @@
 				{% endfor %}
 				</tbody>
 			</table>
-		
 		</div>
 	</div>
+	<hr />
+	<div class="row">
+		<div class="col-xs-12 col-md-6 col-md-offset-3">
+			<div class="text-center">
+				<form class="form" method="post" action="/vote/suggest">
+					<div class="form-group">
+						<label for="link">Dein Wunschfilm ist nicht dabei? Kein Problem, einfach IMDb-Link hier einfügen:</label>
+						<input type="text" class="form-control" name="link" />
+					</div>
+					<button class="btn btn-default" type="submit">Absenden</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<hr />
 {% endblock %}
 {% block js %}
 	<script src="/js/vote.js"></script>

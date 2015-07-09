@@ -86,3 +86,10 @@ form.vote .form-group {
 a.movie_inactive {
 	color: #888888;
 }
+
+form.singleButtonForm {
+	display: inline-block;
+}
+strong.red {
+	color: red;
+}

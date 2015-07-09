@@ -9,6 +9,24 @@
 
 {% block content %}
 	<div class="row">
+		<div class="col-xs-12 col-md-6 col-md-offset-2">
+			{% if success == "setDate" %}
+				<div class="alert alert-success">Datum gespeichert!</div>
+			{% endif %}
+
+			<form action="/admin" method="post" class="form-inline">
+				<input type="hidden" name="action" value="setDate" />
+				<div class="form-group">
+					<label for="date">Datum des nächsten Filmabends:</label>
+					<input type="date" name="date" placeholder="11.11.2015" value="{{ nextDate }}" class="form-control" />
+				</div>
+				<label for="btn"></label>
+				<button class="btn btn-default" type="submit">Speichern!</button>
+			</form>
+		</div>
+	</div>
+	<hr />
+	<div class="row">
 		<div class="col-xs-12">
 			{% if success == "addMovie" %}
 				<div class="alert alert-success">Der Film wurde hinzugefügt!</div>
@@ -19,6 +37,12 @@
 			{% if success == "deleteMovie" %}
 				<div class="alert alert-success">Der Film wurde gelöscht!</div>
 			{% endif %}
+			{% if success == "deactivateMovie" %}
+				<div class="alert alert-success">Der Film wurde deaktiviert!</div>
+			{% endif %}
+			{% if success == "activateMovie" %}
+				<div class="alert alert-success">Der Film wurde aktiviert!</div>
+			{% endif %}
 
 			<table class="table table-striped">
 				<thead>
@@ -26,6 +50,7 @@
 						<th>Titel</th>
 						<th>Jahr</th>
 						<th>IMDb-ID</th>
+						<th>Timestamp</th>
 						<th>Vote</th>
 						<th>Aktion</th>
 					</tr>
@@ -44,6 +69,7 @@
 							<input type="text" name="imdb_id" placeholder="IMDb-ID" class="form-control" />
 						</td>
 						<td></td>
+						<td></td>
 						<td>
 							<button type="submit" class="btn btn-default form-control">Hinzufügen!</button>
 						</td>
@@ -55,15 +81,19 @@
 						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
 						<td>{{ movie.year }}</td>
 						<td>{{ movie.imdb_id }}</td>
+						<td>{{ movie.timestamp|date("d.m.Y") }}</td>
 						<td>{{ movie.vote }}</td>
 						<td>
-							<button class="btn btn-warning btn-edit" data-movie="{{ movie.id }}"><i class="fa fa-pencil"></i></button>
-							<button class="btn btn-danger btn-delete" data-movie="{{ movie.id }}"><i class="fa fa-trash-o"></i></button>
-							{% if movie.active == 1 %}
-								<button class="btn btn-primary btn-disable" data-movie="{{ movie.id }}"><i class="fa fa-times"></i></button>
-							{% else %}
-								<button class="btn btn-primary btn-ensable" data-movie="{{ movie.id }}"><i class="fa fa-check"></i></button>
-							{% endif %}
+							<button class="btn btn-warning btn-edit" data-movie="{{ movie.id }}" title="Editieren"><i class="fa fa-pencil"></i></button>
+							<button class="btn btn-danger btn-delete" data-movie="{{ movie.id }}" title="Löschen"><i class="fa fa-trash-o"></i></button>
+							<form action="/admin" method="post" class="singleButtonForm">
+								<input type="hidden" name="id" value="{{ movie.id }}" />
+								{% if movie.active == 1 %}
+									<button class="btn btn-primary btn-disable" data-movie="{{ movie.id }}" title="Deaktivieren" name="action" value="deactivateMovie"><i class="fa fa-times"></i></button>
+								{% else %}
+									<button class="btn btn-primary btn-ensable" data-movie="{{ movie.id }}" title="Aktivieren" name="action" value="activateMovie"><i class="fa fa-check"></i></button>
+								{% endif %}
+							</form>
 						</td>
 					</tr>
 				{% endfor %}

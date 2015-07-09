@@ -22,6 +22,9 @@
 				{% if error == "invalidemail" %}
 					<div class="alert alert-danger">Die von dir eingebene Mailadresse ist keine sipgate-Mailadresse.</div>
 				{% endif %}
+				{% if error == "invalidemailplus" %}
+					<div class="alert alert-danger">Die von dir eingebene Mailadresse ist keine gültige sipgate-Mailadresse. <strong>Es darf kein + (Pluszeichen) darin vorkommen!</strong></div>
+				{% endif %}
 				{% if error == "userexists" %}
 					<div class="alert alert-danger">Mit dieser Mailadresse gibt es bereits einen Benutzer.</div>
 				{% endif %}

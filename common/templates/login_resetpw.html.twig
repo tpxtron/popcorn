@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% block page_head_title %}login | popcorn.sipgate.net{%endblock %}
+{% block page_head_description %}Popcorn-Abende bei sipgate - Login{%endblock %}
+{% block page_head_keywords %}sipgate,kino,film,popcorn{%endblock %}
+{% block page_head_og_title %}login | popcorn.sipgate.net{% endblock %}
+{% block page_head_og_image %}{% endblock %}
+{% block page_head_og_description %}Popcorn-Abende bei sipgate - Login{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if error == "invalidToken" %}
+				<div class="alert alert-danger">Mit dem Reset-Token kann ich leider keinen Benutzer finden...</div>
+			{% else %}
+				{% if error == "passwordsDontMatch" %}
+					<div class="alert alert-danger">Die eingegebenen Passwörter stimmen nicht überein.</div>
+				{% endif %}
+				{% if error == "passwordTooShort" %}
+					<div class="alert alert-danger">Bitte wähle ein Passwort mit mindestens 8 Zeichen.</div>
+				{% endif %}
+				<div class="panel panel-default">
+					<div class="panel-heading">Neues Passwort vergeben</div>
+					<div class="panel-body">
+						<form action="/resetpassword" method="POST">
+							<input type="hidden" name="key" value="{{ key }}" />
+							<div class="form-group">
+								<input type="password" placeholder="Neues Passwort (min. 8 Zeichen)" name="password" class="form-control" />
+							</div>
+							<div class="form-group">
+								<input type="password" placeholder="Neues Passwort wiederholen" name="passwordrepeat" class="form-control" />
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary pull-right" type="submit">Neues Passwort festlegen</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

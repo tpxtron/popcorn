@@ -12,6 +12,67 @@ class db
 		$this->db = new PDO('mysql:host=localhost;dbname='.$this->dbname.';charset=utf8', $this->user, $this->pass);
 	}
 
+	public function userexists($username) {
+		$st = $this->db->prepare("SELECT `email` FROM `users` WHERE LOWER(`email`)=? LIMIT 1");
+		$st->execute(array(strtolower($username)));
+
+		$res = $st->fetch();
+
+		if($res === false) return false;
+
+		return true;
+	}
+
+	public function getAdminUsers() {
+		$st = $this->db->prepare("SELECT * FROM `users` WHERE `is_admin`=1");
+		$st->execute();
+
+		return $st->fetchAll();
+	}
+
+	public function getUserById($id) {
+		$st = $this->db->prepare("SELECT * FROM `users` WHERE `id`=? LIMIT 1");
+		$st->execute(array($id));
+
+		return $st->fetch();
+	}
+
+	public function getUserByUsername($username) {
+		$st = $this->db->prepare("SELECT * FROM `users` WHERE `email`=? LIMIT 1");
+		$st->execute(array($username));
+
+		return $st->fetch();
+	}
+
+	public function getUserByResetToken($token) {
+		$st = $this->db->prepare("DELETE FROM `reset_tokens` WHERE `timestamp` < (NOW() - INTERVAL 24 HOUR)");
+		$st->execute();
+
+		$st = $this->db->prepare("SELECT `user_id` FROM `reset_tokens` WHERE `token`=? LIMIT 1");
+		$st->execute(array($token));
+
+		return $st->fetch();
+	}
+
+	public function storeResetToken($userId) {
+		$token = uniqid();
+
+		$st = $this->db->prepare("INSERT INTO `reset_tokens` SET `user_id`=?, `token`=?");
+		$st->execute(array($userId,$token));
+
+		return $token;
+	}
+
+	public function dropResetToken($token) {
+		$st = $this->db->prepare("DELETE FROM `reset_tokens` WHERE `token`=? LIMIT 1");
+		$st->execute(array($token));
+	}
+
+	public function setNewPassword($userId,$password) {
+		$st = $this->db->prepare("UPDATE `users` SET `password_hash`=? WHERE `id`=? LIMIT 1");
+		$st->execute(array(crypt($password),$userId));
+	}
+
 	public function addUser($username, $password) {
 		$activationKey = uniqid();
 
@@ -33,21 +94,6 @@ class db
 		$foo = $st->execute(array($res['id']));
 
 		return true;
-	}
-
-	public function setNewPassword($username) {
-		$st = $this->db->prepare("SELECT * FROM `users` WHERE `email`=? AND `activation_hash` IS NULL LIMIT 1");
-		$st->execute(array($username));
-
-		$res = $st->fetch();
-		if($res === false || count($res) == 0) return false;
-
-		$password = substr(uniqid(),0,8);
-
-		$st = $this->db->prepare("UPDATE `users` SET `password`=? WHERE `email`=? LIMIT 1");
-		$st->execute(array(crypt($password),$username));
-
-		return $password;
 	}
 
 	public function verifyLogin($username, $password) {
@@ -143,6 +189,16 @@ class db
 
 	public function deleteMovie($id) {
 		$st = $this->db->prepare("DELETE FROM `movies` WHERE `id`=? LIMIT 1");
+		$st->execute(array($id));
+	}
+
+	public function deactivateMovie($id) {
+		$st = $this->db->prepare("UPDATE `movies` SET `active`=0 WHERE `id`=? LIMIT 1");
+		$st->execute(array($id));
+	}
+
+	public function activateMovie($id) {
+		$st = $this->db->prepare("UPDATE `movies` SET `active`=1 WHERE `id`=? LIMIT 1");
 		$st->execute(array($id));
 	}
 

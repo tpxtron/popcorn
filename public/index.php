@@ -45,12 +45,46 @@ $app->get('/login/forgotpw', function() use ($app, $viewData, $db) {
 	$app->render("login_forgotpw.html.twig",$viewData);
 });
 $app->post('/login/forgotpw', function() use ($app, $viewData, $db, $mailer) {
-	$newpw = $db->setNewPassword($_POST['username']);
-	if($newpw !== false) {
-		$mailer->sendNewPasswordMail($_POST['username'],$newpw);
+	$user = $db->getUserByUsername($_POST['username']);
+	if($user === false) {
+		$viewData['error'] = true;
+	} else {
+		$token = $db->storeResetToken($user['id']);
+		$mailer->sendPasswordResetMail($user['email'],$token);
+		$viewData['success'] = true;
 	}
-	$viewData['success'] = true;
 	$app->render("login_forgotpw.html.twig",$viewData);
+});
+$app->get('/resetpassword/:key', function($key) use ($app, $viewData, $db, $mailer) {
+	$user = $db->getUserByResetToken($key);
+	if($user === false) {
+		$viewData['error'] = "invalidToken";
+	} else {
+		$viewData['key'] = $key;
+	}
+	$app->render("login_resetpw.html.twig",$viewData);
+});
+$app->post('/resetpassword', function() use ($app, $viewData, $db, $mailer) {
+	$user = $db->getUserByResetToken($_POST['key']);
+	$viewData['key'] = $_POST['key'];
+	if($user === false) {
+		$viewData['error'] = "invalidToken";
+	} else {
+		if($_POST['password'] != $_POST['passwordrepeat']) {
+			$viewData['error'] = "passwordsDontMatch";
+		}
+		if(strlen($_POST['password']) < 8) {
+			$viewData['error'] = "passwordTooShort";
+		}
+	}
+
+	if(isset($viewData['error'])) {
+		$app->render("login_resetpw.html.twig",$viewData);
+	} else {
+		$db->setNewPassword($user['user_id'],$_POST['password']);
+		$db->dropResetToken($_POST['key']);
+		$app->render("login_resetpw_success.html.twig",$viewData);
+	}
 });
 
 $app->post('/login', function() use ($app, $viewData, $db) {
@@ -80,8 +114,14 @@ $app->post('/signup', function() use ($app, $viewData, $db, $mailer) {
 	if(strlen(trim($_POST['password'])) < 8) {
 		$viewData['error'] = "pwtooshort";
 	}
+	if(stristr($_POST['username'],"+") !== false) {
+		$viewData['error'] = "invalidemailplus";
+	}
 	if(strtolower(substr($_POST['username'],-11)) != "@sipgate.de") {
 		$viewData['error'] = "invalidemail";
+	}
+	if($db->userexists($_POST['username'])) {
+		$viewData['error'] = "userexists";
 	}
 	if(!isset($viewData['error'])) {
 		$key = $db->addUser($_POST['username'],$_POST['password']);
@@ -100,13 +140,31 @@ $app->get('/signup/:key', function($key) use($app, $viewData, $db) {
 	$app->render("signup_activate.html.twig",$viewData);
 });
 $app->get('/vote', function() use($app, $viewData, $db) {
+	if(!isset($_SESSION['user'])) {
+		header("location:/login");
+		die();
+	}
 	$viewData['movies'] = $db->getAllMovies();
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
+	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
+	$viewData['top10movies'] = $db->getTop10Movies();
 	$app->render("vote.html.twig",$viewData);
 });
 $app->post('/vote', function() use($app, $viewData, $db) {
 	$db->updateVote($_SESSION['user'],$_POST['movieId'],$_POST['value']);
 });
+$app->post('/vote/suggest', function() use($app, $viewData, $db, $mailer) {
+	$user = $db->getUserById($_SESSION['user']);
+	$admins = $db->getAdminUsers();
+	$mailer->sendSuggestionToAdmins($_POST['link'],$user['email'],$admins);
+	$viewData['movies'] = $db->getAllMovies();
+	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
+	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
+	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['success'] = 'voteSuggest';
+	$app->render("vote.html.twig",$viewData);
+});
+
 $app->get('/admin', function() use ($app, $viewData, $db) {
 	if(!isset($_SESSION['is_admin'])) {
 		header("location:/vote");
@@ -142,8 +200,21 @@ $app->post('/admin', function() use ($app, $viewData, $db) {
 			$db->deleteMovie($_POST['id']);
 			$viewData['success'] = 'deleteMovie';
 			break;
+		case 'deactivateMovie':
+			$db->deactivateMovie($_POST['id']);
+			$viewData['success'] = 'deactivateMovie';
+			break;
+		case 'activateMovie':
+			$db->activateMovie($_POST['id']);
+			$viewData['success'] = 'activateMovie';
+			break;
+		case 'setDate':
+			file_put_contents(dirname(__FILE__)."/../date.txt",$_POST['date']);
+			$viewData['success'] = 'setDate';
+			break;
 	}
 	$viewData['movies'] = $db->getAllMoviesWithStats();
+	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$app->render("admin.html.twig",$viewData);
 });
 

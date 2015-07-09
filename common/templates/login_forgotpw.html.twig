@@ -10,8 +10,11 @@
 {% block content %}
 	<div class="row">
 		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			{% if error %}
+				<div class="alert alert-danger">Hm, irgendwie scheinst du keinen Account zu haben oder es hat sich ein Tippfehler in deine Mailadresse eingeschlichen... :-(</div>
+			{% endif %}
 			{% if success %}
-				<div class="alert alert-success">Du hast ein neues Passwort per Mail erhalten!</div>
+				<div class="alert alert-success">Du hast Instruktionen zum Zurücksetzen deines Passworts per Mail erhalten!</div>
 			{% else %}
 				<div class="panel panel-default">
 					<div class="panel-heading">Zugangsdaten anfordern</div>
