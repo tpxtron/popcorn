@@ -14,17 +14,21 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th width="60%">Titel</th>
-						<th width="20%">Jahr</th>
-						<th width="20%">Vote</th>
+						<th width="5%">Nr.</th>
+						<th width="65%">Titel</th>
+						<th width="10%">Jahr</th>
+						<th width="10%">Vote</th>
+						<th width="10%">Votecount</th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for movie in top10movies %}
 					<tr id="movierow_{{ movie.id }}">
+						<td align="right">{{ loop.index }}.</td>
 						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
 						<td>{{ movie.year }}</td>
 						<td>{{ movie.vote }}</td>
+						<td>{{ movie.votecount }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
@@ -33,17 +37,21 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th width="60%">Titel</th>
-						<th width="20%">Jahr</th>
-						<th width="20%">Vote</th>
+						<th width="5%">Nr.</th>
+						<th width="65%">Titel</th>
+						<th width="10%">Jahr</th>
+						<th width="10%">Vote</th>
+						<th width="10%">Votecount</th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for movie in flop10movies %}
 					<tr id="movierow_{{ movie.id }}">
+						<td align="right">{{ loop.index }}.</td>
 						<td><a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a></td>
 						<td>{{ movie.year }}</td>
 						<td>{{ movie.vote }}</td>
+						<td>{{ movie.votecount }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
@@ -52,13 +60,15 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Email</th>
-						<th>Aktiviert?</th>
+						<th width="5%">Nr.</th>
+						<th width="85%">Email</th>
+						<th width="10%">Aktiviert?</th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for user in users %}
 					<tr>
+						<td align="right">{{ loop.index }}</td>
 						<td>{{ user.email }}</td>
 						<td>{% if user.activation_hash %}Nein{% else %}Ja{% endif %}</td>
 					</tr>

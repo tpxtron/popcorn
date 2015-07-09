@@ -79,3 +79,8 @@ form.singleButtonForm {
 strong.red {
 	color: red;
 }
+
+cite {
+	margin-top: 20px;
+	display: block;
+}

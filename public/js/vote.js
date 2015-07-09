@@ -13,6 +13,10 @@ $(document).ready(function() {
 		});
 	});
 
+	$('#fakeSaveButton').click(function(e) {
+		alert("Was steht oben? Du musst nicht auf Speichern klicken, Pfeifenjohnny!");
+	});
+
 	function resizeCheck() {
 		if(window.innerHeight > window.innerWidth) {
 			$('.visible-portrait').removeClass('hidden').addClass('visible-xs');

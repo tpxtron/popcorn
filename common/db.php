@@ -140,21 +140,21 @@ class db
 	}
 
 	public function getAllMoviesWithStats() {
-		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` GROUP BY `movies`.`id` ORDER BY `movies`.`title` ASC;");
+		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote`, COUNT(`votes`.`vote`) AS `votecount` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` GROUP BY `movies`.`id` ORDER BY `movies`.`title` ASC;");
 		$st->execute();
 
 		return $st->fetchAll();
 	}
 
 	public function getTop10Movies() {
-		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` WHERE `active`=1 AND `vote` IS NOT NULL GROUP BY `movies`.`id` ORDER BY `vote` DESC, `title` ASC LIMIT 10;");
+		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote`, COUNT(`votes`.`vote`) AS `votecount` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` WHERE `active`=1 AND `vote` IS NOT NULL GROUP BY `movies`.`id` ORDER BY `vote` DESC, `votecount` ASC, `title` ASC LIMIT 10;");
 		$st->execute();
 
 		return $st->fetchAll();
 	}
 
 	public function getFlop10Movies() {
-		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` WHERE `active`=1 AND `vote` IS NOT NULL GROUP BY `movies`.`id` ORDER BY `vote` ASC, `title` ASC LIMIT 10;");
+		$st = $this->db->prepare("SELECT `movies`.`id` AS `id`, `movies`.`title` AS `title`, `movies`.`imdb_id` AS `imdb_id`, `movies`.`year` AS `year`, `movies`.`active` AS `active`, SUM(`votes`.`vote`) AS `vote`, COUNT(`votes`.`vote`) AS `votecount` FROM `movies` LEFT JOIN `votes` ON `votes`.`movie_id`=`movies`.`id` WHERE `active`=1 AND `vote` IS NOT NULL GROUP BY `movies`.`id` ORDER BY `vote` ASC, `votecount` DESC, `title` ASC LIMIT 10;");
 		$st->execute();
 
 		return $st->fetchAll();
