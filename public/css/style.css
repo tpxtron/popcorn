@@ -4,20 +4,6 @@ header .navbar .navbar-header a.navbar-brand img {
 	margin-top: -15px;
 }
 
-div.intro {
-	height: 80vh;
-	width: 100vw;
-	display: table-cell;
-	vertical-align: middle;
-	text-align: center;
-}
-
-div.intro img {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}
-
 form.vote .form-group {
 	display: inline-block;
 	text-align: center;

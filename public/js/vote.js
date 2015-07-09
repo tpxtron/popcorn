@@ -13,4 +13,20 @@ $(document).ready(function() {
 		});
 	});
 
+	function resizeCheck() {
+		if(window.innerHeight > window.innerWidth) {
+			$('.visible-portrait').removeClass('hidden').addClass('visible-xs');
+			$('.hidden-portrait').addClass('hidden');
+		} else {
+			$('.visible-portrait').addClass('hidden').removeClass('visible-xs');
+			$('.hidden-portrait').removeClass('hidden');
+		}
+	}
+
+	$(window).resize(function() {
+		resizeCheck();
+	});
+
+	resizeCheck();
+
 });
