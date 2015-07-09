@@ -92,7 +92,8 @@ TODO:
 						<tr id="movierow_{{ movie.id }}">
 							<td>
 								<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a>
-								{% if movie.timestamp|date("U") > (now|date("U") - 604800) %}
+								{% if movie.timestamp|date("U") > (now|date("U") - 172800) %}
+									{# newer than 2 days #}
 									<img src="/img/new.png" alt="NEW!" />
 								{% endif %}
 							</td>
