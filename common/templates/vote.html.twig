@@ -1,3 +1,9 @@
+{#
+TODO:
+- Filter nach Anfangsbuchstabe
+- Sortierbarkeit der Liste nach Name/Jahr/Eigenem Vote
+#}
+
 {% extends 'layout.html.twig' %}
 
 {% block page_head_title %}vote | popcorn.sipgate.net{%endblock %}
@@ -12,6 +18,9 @@
 		<div class="col-xs-12">
 			{% if success %}
 				<div class="alert alert-success">Danke! Wir kümmern uns... :-)</div>
+			{% endif %}
+			{% if error %}
+				<div class="alert alert-danger">Leere Vorschläge nehmen wir ja grundsätzlich nicht an. ;-)</div>
 			{% endif %}
 			<hr />
 			<div class="text-center">
@@ -29,10 +38,15 @@
 			{% if nextDate|date("d.m.Y") == now|date("d.m.Y") %}
 				<div class="row">
 					<div class="col-xs-12 col-md-6 col-md-offset-3">
-						<h3 class="text-center">Die Top 10 für heute - noch geht alles!</h3>
+						{% if now|date("H") < 16 %}
+							<h3 class="text-center">Die Top 10 für heute - noch geht alles!<br />Ihr könnt noch bis <strong>16:00 Uhr</strong> abstimmen!</h3>
+						{% else %}
+							<h3 class="text-center">Die Top 10 für heute</h3>
+						{% endif %}
 						<table class="table table-striped table-hover">
 							<thead>
 								<tr>
+									<th>Platz</th>
 									<th>Titel</th>
 									<th>Jahr</th>
 								</tr>
@@ -40,6 +54,7 @@
 							<tbody>
 							{% for movie in top10movies %}
 								<tr id="movierow_{{ movie.id }}">
+									<td align="right">{{ loop.index }}.</td>
 									<td>
 										<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank">{{ movie.title }}</a>
 									</td>
@@ -52,50 +67,54 @@
 				</div>
 				<hr />
 			{% endif %}
-			<div class="alert alert-warning hidden visible-portrait visible-xs">
-				Bitte drehe dein Handy, um die Abstimmungstabelle nutzen zu können.
-			</div>
-			<table class="table table-striped table-hover hidden-portrait">
-				<thead>
-					<tr>
-						<th>Titel</th>
-						<th>Jahr</th>
-						<th class="text-center">F*CK YEAH!</th>
-						<th class="text-center">YEAH!</th>
-						<th class="text-center">meh.</th>
-						<th class="text-center">NOPE!</th>
-						<th class="text-center">HELL NO!</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for movie in movies %}
-					<tr id="movierow_{{ movie.id }}">
-						<td>
-							<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank">{{ movie.title }}</a>
-							{% if movie.timestamp|date("U") > (now|date("U") - 604800) %}
-								<img src="/img/new.png" alt="NEW!" />
-							{% endif %}
-						</td>
-						<td>{{ movie.year }}</td>
-						<td class="text-center">
-							<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="2"{% if attribute(votes,movie.id) == 2 %} checked{% endif %}>
-						</td>
-						<td class="text-center">
-							<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="1"{% if attribute(votes,movie.id) == 1 %} checked{% endif %}>
-						</td>
-						<td class="text-center">
-							<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="0"{% if not attribute(votes,movie.id) or attribute(votes,movie.id) == 0 %} checked{% endif %}>
-						</td>
-						<td class="text-center">
-							<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="-1"{% if attribute(votes,movie.id) == -1 %} checked{% endif %}>
-						</td>
-						<td class="text-center">
-							<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="-2"{% if attribute(votes,movie.id) == -2 %} checked{% endif %}>
-						</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+			{% if nextDate|date("d.m.Y") == now|date("d.m.Y") and now|date("H") > 16 %}
+				<div class="alert alert-success">Die Abstimmung ist bereits geschlossen. :-(</div>
+			{% else %}
+				<div class="alert alert-warning hidden visible-portrait visible-xs">
+					Bitte drehe dein Handy, um die Abstimmungstabelle nutzen zu können.
+				</div>
+				<table class="table table-striped table-hover hidden-portrait">
+					<thead>
+						<tr>
+							<th>Titel</th>
+							<th>Jahr</th>
+							<th class="text-center">F*CK YEAH!</th>
+							<th class="text-center">YEAH!</th>
+							<th class="text-center">meh.</th>
+							<th class="text-center">NOPE!</th>
+							<th class="text-center">HELL NO!</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for movie in movies %}
+						<tr id="movierow_{{ movie.id }}">
+							<td>
+								<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a>
+								{% if movie.timestamp|date("U") > (now|date("U") - 604800) %}
+									<img src="/img/new.png" alt="NEW!" />
+								{% endif %}
+							</td>
+							<td>{{ movie.year }}</td>
+							<td class="text-center">
+								<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="2"{% if attribute(votes,movie.id) == 2 %} checked{% endif %}>
+							</td>
+							<td class="text-center">
+								<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="1"{% if attribute(votes,movie.id) == 1 %} checked{% endif %}>
+							</td>
+							<td class="text-center">
+								<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="0"{% if not attribute(votes,movie.id) or attribute(votes,movie.id) == 0 %} checked{% endif %}>
+							</td>
+							<td class="text-center">
+								<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="-1"{% if attribute(votes,movie.id) == -1 %} checked{% endif %}>
+							</td>
+							<td class="text-center">
+								<input type="radio" name="movie_{{ movie.id }}" data-movie="{{ movie.id }}" value="-2"{% if attribute(votes,movie.id) == -2 %} checked{% endif %}>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
 		</div>
 	</div>
 	<hr />

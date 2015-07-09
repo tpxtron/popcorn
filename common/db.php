@@ -12,6 +12,13 @@ class db
 		$this->db = new PDO('mysql:host=localhost;dbname='.$this->dbname.';charset=utf8', $this->user, $this->pass);
 	}
 
+	public function getAllUsers() {
+		$st = $this->db->prepare("SELECT * FROM `users`");
+		$st->execute();
+
+		return $st->fetchAll();
+	}
+
 	public function userexists($username) {
 		$st = $this->db->prepare("SELECT `email` FROM `users` WHERE LOWER(`email`)=? LIMIT 1");
 		$st->execute(array(strtolower($username)));
@@ -112,7 +119,7 @@ class db
 	}
 
 	public function getAllMovies() {
-		$st = $this->db->prepare("SELECT * FROM `movies` WHERE `active`=1 ORDER BY `title` ASC");
+		$st = $this->db->prepare("SELECT * FROM `movies` ORDER BY `title` ASC");
 		$st->execute();
 
 		return $st->fetchAll();

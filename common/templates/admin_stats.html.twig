@@ -48,7 +48,24 @@
 				{% endfor %}
 				</tbody>
 			</table>
-
+			<h1>Users</h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Email</th>
+						<th>Aktiviert?</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in users %}
+					<tr>
+						<td>{{ user.email }}</td>
+						<td>{% if user.activation_hash %}Nein{% else %}Ja{% endif %}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		
 		</div>
 	</div>
 {% endblock %}

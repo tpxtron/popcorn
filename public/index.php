@@ -154,14 +154,22 @@ $app->post('/vote', function() use($app, $viewData, $db) {
 	$db->updateVote($_SESSION['user'],$_POST['movieId'],$_POST['value']);
 });
 $app->post('/vote/suggest', function() use($app, $viewData, $db, $mailer) {
-	$user = $db->getUserById($_SESSION['user']);
-	$admins = $db->getAdminUsers();
-	$mailer->sendSuggestionToAdmins($_POST['link'],$user['email'],$admins);
+	if(!isset($_SESSION['user'])) {
+		header("location:/login");
+		die();
+	}
+	if(trim($_POST['link']) != "") {
+		$user = $db->getUserById($_SESSION['user']);
+		$admins = $db->getAdminUsers();
+		$mailer->sendSuggestionToAdmins($_POST['link'],$user['email'],$admins);
+		$viewData['success'] = 'voteSuggest';
+	} else {
+		$viewData['error'] = 'voteSuggest';
+	}
 	$viewData['movies'] = $db->getAllMovies();
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$viewData['top10movies'] = $db->getTop10Movies();
-	$viewData['success'] = 'voteSuggest';
 	$app->render("vote.html.twig",$viewData);
 });
 
@@ -171,6 +179,7 @@ $app->get('/admin', function() use ($app, $viewData, $db) {
 		die();
 	}
 	$viewData['movies'] = $db->getAllMoviesWithStats();
+	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$app->render("admin.html.twig",$viewData);
 });
 $app->get('/admin/stats', function() use ($app, $viewData, $db) {
@@ -180,6 +189,7 @@ $app->get('/admin/stats', function() use ($app, $viewData, $db) {
 	}
 	$viewData['top10movies'] = $db->getTop10Movies();
 	$viewData['flop10movies'] = $db->getFlop10Movies();
+	$viewData['users'] = $db->getAllUsers();
 	$app->render("admin_stats.html.twig",$viewData);
 });
 
