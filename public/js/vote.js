@@ -13,6 +13,22 @@ $(document).ready(function() {
 		});
 	});
 
+	$('.filterLetter').click(function(e) {
+		$('.filterLetter').parent('li').removeClass('active');
+		$(e.delegateTarget).parent('li').addClass('active');
+
+		var letter = $(e.delegateTarget).data('letter');
+		if(letter == "all") {
+			$('.movierow').show();
+		} else if(letter == "new") {
+			$('.movierow').hide();
+			$('.newmovie').show();
+		} else {
+			$('.movierow').hide();
+			$('.firstletter_' + letter).show();
+		}
+	});
+
 	$('#fakeSaveButton').click(function(e) {
 		alert("Was steht oben? Du musst nicht auf Speichern klicken, Pfeifenjohnny!");
 	});
