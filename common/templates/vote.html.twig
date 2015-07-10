@@ -75,8 +75,8 @@ TODO:
 				<div class="alert alert-warning hidden visible-portrait visible-xs">
 					Bitte drehe dein Handy, um die Abstimmungstabelle nutzen zu können.
 				</div>
-				<p>Keine Sorge: Deine Abstimmung wird bei einem Klick auf eine Wertung sofort gespeichert. Du musst nirgends auf "Speichern" o.Ä. klicken!<br />Du kannst deine Wertungen jederzeit verändern - bis zum Vorführungstag um punkt 16 Uhr!</p>
-				<nav class="filter">
+				<p class="hidden-portrait">Keine Sorge: Deine Abstimmung wird bei einem Klick auf eine Wertung sofort gespeichert. Du musst nirgends auf "Speichern" o.Ä. klicken!<br />Du kannst deine Wertungen jederzeit verändern - bis zum Vorführungstag um punkt 16 Uhr!</p>
+				<nav class="filter hidden-portrait">
 					<ul class="pagination">
 						<li class="active"><a href="javascript:" class="filterLetter" data-letter="all">Alle</a></li>
 						{% set oldLetter = "" %}
@@ -135,14 +135,14 @@ TODO:
 					{% endfor %}
 					</tbody>
 				</table>
-				<p class="text-center">
+				<p class="text-center hidden-portrait">
 					<button class="btn btn-default" id="fakeSaveButton">Abstimmung speichern</button>
 				</p>
 			{% endif %}
 		</div>
 	</div>
-	<hr />
-	<div class="row">
+	<hr class="hidden-portrait" />
+	<div class="row hidden-portrait">
 		<div class="col-xs-12 col-md-6 col-md-offset-3">
 			<div class="text-center">
 				<form class="form" method="post" action="/vote/suggest">
