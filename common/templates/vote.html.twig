@@ -79,11 +79,18 @@ TODO:
 				<nav class="filter hidden-portrait">
 					<ul class="pagination">
 						<li class="active"><a href="javascript:" class="filterLetter" data-letter="all">Alle</a></li>
+						<li><a href="javascript:" class="filterLetter" data-letter="other">#!?$</a></li>
 						{% set oldLetter = "" %}
 						{% for movie in movies %}
-							{% if oldLetter != movie.title|slice(0,1)|capitalize %}
-								{% set oldLetter = movie.title|slice(0,1)|capitalize %}
-								<li><a href="javascript:" class="filterLetter" data-letter="{{ oldLetter }}">{{ oldLetter }}</a></li>
+							{% set currentLetter = movie.title|slice(0,1)|capitalize %}
+							{% if currentLetter in ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Ä","Ö","Ü"] %}
+								{% if currentLetter in ["0","1","2","3","4","5","6","7","8","9"] %}
+									{% set currentLetter = "0-9" %}
+								{% endif %}
+								{% if oldLetter != currentLetter %}
+									{% set oldLetter = currentLetter %}
+									<li><a href="javascript:" class="filterLetter" data-letter="{{ oldLetter }}">{{ oldLetter }}</a></li>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 						<li><a href="javascript:" class="filterLetter" data-letter="new">Neue Filme</a></li>
@@ -104,7 +111,14 @@ TODO:
 					</thead>
 					<tbody>
 					{% for movie in movies %}
-						<tr id="movierow_{{ movie.id }}" class="movierow firstletter_{{ movie.title|slice(0,1)|capitalize }}{% if movie.timestamp|date("U") > (now|date("U") - 172800) %} newmovie{% endif %}">
+						{% set firstLetter = movie.title|slice(0,1)|capitalize %}
+						{% if firstLetter in ["0","1","2","3","4","5","6","7","8","9"] %}
+							{% set firstLetter = "0-9" %}
+						{% endif %}
+						{% if firstLetter not in ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Ä","Ö","Ü"] %}
+							{% set firstLetter = "other" %}
+						{% endif %}
+						<tr id="movierow_{{ movie.id }}" class="movierow firstletter_{{ firstLetter }}{% if movie.timestamp|date("U") > (now|date("U") - 172800) %} newmovie{% endif %}">
 							<td>
 								<a href="http://www.imdb.com/title/{{ movie.imdb_id }}/" target="_blank"{% if movie.active == 0 %} class="movie_inactive"{% endif %}>{{ movie.title }}</a>
 								{% if movie.timestamp|date("U") > (now|date("U") - 172800) %}
