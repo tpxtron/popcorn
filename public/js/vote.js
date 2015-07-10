@@ -23,6 +23,14 @@ $(document).ready(function() {
 		} else if(letter == "new") {
 			$('.movierow').hide();
 			$('.newmovie').show();
+		} else if(letter == "meh") {
+			$('.movierow').hide();
+			$('.vote_meh').each(function(i,e) {
+				if($(e).is(':checked')) {
+					var id = $(e).data('movie');
+					$('#movierow_'+id).show();
+				}
+			});
 		} else {
 			$('.movierow').hide();
 			$('.firstletter_' + letter).show();

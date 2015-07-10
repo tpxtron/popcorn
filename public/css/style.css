@@ -84,3 +84,7 @@ cite {
 	margin-top: 20px;
 	display: block;
 }
+
+ul.pagination li a {
+	padding: 2px 5px;
+}
