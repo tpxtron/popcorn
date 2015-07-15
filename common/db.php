@@ -209,4 +209,23 @@ class db
 		$st->execute(array($id));
 	}
 
+	public function addCommitment($userId) {
+		$st = $this->db->prepare("INSERT INTO `commitments` SET `user_id`=?");
+		$st->execute(array($userId));
+	}
+
+	public function removeCommitment($userId) {
+		$st = $this->db->prepare("DELETE FROM `commitments` WHERE `user_id`=? LIMIT 1");
+		$st->execute(array($userId));
+	}
+
+	public function hasCommitment($userId) {
+		$st = $this->db->prepare("SELECT `timestamp` FROM `commitments` WHERE `user_id`=? LIMIT 1");
+		$st->execute(array($userId));
+
+		$res = $st->fetch();
+
+		return $res;
+	}
+
 }

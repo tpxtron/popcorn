@@ -41,6 +41,66 @@ $(document).ready(function() {
 		alert("Was steht oben? Du musst nicht auf Speichern klicken, Pfeifenjohnny!");
 	});
 
+	function submitSuggestion() {
+		var url = $('#suggestionLink').val();
+		if(url == "") {
+			$('#suggestionErrorAlert').removeClass('hidden').addClass('alertFadeout');
+			window.setTimeout(function() { $('#suggestionErrorAlert').removeClass('alertFadeout').addClass('hidden'); }, 5000);
+		} else if(!url.match(/^(.*)?imdb(.*)\/tt[0-9]{7}(.*)?/i)) {
+			$('#suggestionErrorUrlAlert').removeClass('hidden').addClass('alertFadeout');
+			window.setTimeout(function() { $('#suggestionErrorUrlAlert').removeClass('alertFadeout').addClass('hidden'); }, 5000);
+		} else {
+			$.ajax({
+				method: "post",
+				url: "/vote/suggest",
+				data: { "link": url }
+			}).done(function() {
+				$('#suggestionForm').addClass('hidden');
+				$('#suggestionLink').val('');
+				$('#suggestionAlert').removeClass('hidden').addClass('alertFadeout');
+				window.setTimeout(function() { $('#suggestionAlert').removeClass('alertFadeout').addClass('hidden'); $('#suggestionForm').removeClass('hidden'); }, 5000);
+			});
+		}
+	}
+
+	$('#suggestionLink').keypress(function(e) {
+		if(e.keyCode == 13) {
+			submitSuggestion();
+		}
+	});
+
+	$('#suggestionButton').click(function(e) {
+		submitSuggestion();
+	});
+
+	function commit(t) {
+		$.ajax({
+			method: "post",
+			url: "/vote/commitment",
+			data: { "type": t }
+		}).done(function() {
+			if(t == "in") {
+				$('#commitmentInButton').addClass('hidden');
+				$('#commitmentOutButton').removeClass('hidden');
+				$('#commitmentInText').removeClass('hidden');
+				$('#commitmentOutText').addClass('hidden');
+			} else {
+				$('#commitmentOutButton').addClass('hidden');
+				$('#commitmentInButton').removeClass('hidden');
+				$('#commitmentOutText').removeClass('hidden');
+				$('#commitmentInText').addClass('hidden');
+			}
+		});
+	}
+
+	$('#commitmentInButton').click(function(e) {
+		commit('in');
+	});
+
+	$('#commitmentOutButton').click(function(e) {
+		commit('out');
+	});
+
 	function resizeCheck() {
 		if(window.innerHeight > window.innerWidth) {
 			$('.visible-portrait').removeClass('hidden').addClass('visible-xs');

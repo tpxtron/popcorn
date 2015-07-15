@@ -148,6 +148,7 @@ $app->get('/vote', function() use($app, $viewData, $db) {
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['commitment'] = $db->hasCommitment($_SESSION['user']);
 	$app->render("vote.html.twig",$viewData);
 });
 $app->post('/vote', function() use($app, $viewData, $db) {
@@ -170,7 +171,19 @@ $app->post('/vote/suggest', function() use($app, $viewData, $db, $mailer) {
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['commitment'] = $db->hasCommitment($_SESSION['user']);
 	$app->render("vote.html.twig",$viewData);
+});
+$app->post('/vote/commitment', function() use($app, $viewData, $db) {
+	if(!isset($_SESSION['user'])) {
+		header("location:/login");
+		die();
+	}
+	if($_POST['type'] == "in") {
+		$db->addCommitment($_SESSION['user']);
+	} else {
+		$db->removeCommitment($_SESSION['user']);
+	}
 });
 
 $app->get('/admin', function() use ($app, $viewData, $db) {

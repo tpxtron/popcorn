@@ -56,6 +56,26 @@ form.vote .form-group {
 	100%	{ background-color: #ffffff; }
 }
 
+@-webkit-keyframes fadeout {
+	0%		{ opacity: 1; }
+	100%	{ opacity: 0; }
+}
+
+@-moz-keyframes fadeout {
+	0%		{ opacity: 1; }
+	100%	{ opacity: 0; }
+}
+
+@-o-keyframes fadeout {
+	0%		{ opacity: 1; }
+	100%	{ opacity: 0; }
+}
+
+@keyframes fadeout {
+	0%		{ opacity: 1; }
+	100%	{ opacity: 0; }
+}
+
 .table-striped>tbody>tr.flash:nth-of-type(odd) {
 	animation-name: flashGrey;
 	-moz-animation-name: flashGrey;
@@ -67,6 +87,21 @@ form.vote .form-group {
 	-moz-animation-name: flash;
 	-webkit-animation-name: flash;
 	-o-animation-name: flash;
+}
+
+.alertFadeout {
+	animation-name: fadeout;
+	-moz-animation-name: fadeout;
+	-webkit-animation-name: fadeout;
+	-o-animation-name: fadeout;
+	animation-delay: 4s;
+	-moz-animation-delay: 4s;
+	-webkit-animation-delay: 4s;
+	-o-animation-delay: 4s;
+	animation-duration: 1s;
+	-moz-animation-duration: 1s;
+	-webkit-animation-duration: 1s;
+	-o-animation-duration: 1s;
 }
 
 a.movie_inactive {
