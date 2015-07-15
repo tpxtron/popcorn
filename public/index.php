@@ -203,7 +203,15 @@ $app->get('/admin/stats', function() use ($app, $viewData, $db) {
 	$viewData['top10movies'] = $db->getTop10Movies();
 	$viewData['flop10movies'] = $db->getFlop10Movies();
 	$viewData['users'] = $db->getAllUsers();
+	$viewData['commitments'] = $db->getAllCommitments();
 	$app->render("admin_stats.html.twig",$viewData);
+});
+$app->post('/admin/deletecommitments', function() use($app, $db) {
+	if(!isset($_SESSION['is_admin'])) {
+		header("location:/vote");
+		die();
+	}
+	$db->dropAllCommitments();
 });
 
 $app->post('/admin', function() use ($app, $viewData, $db) {

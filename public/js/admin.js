@@ -19,4 +19,15 @@ $(document).ready(function() {
 		$('#deleteModal_id').val(id);
 		$('#deleteModal').modal('show');
 	});
+
+	$('#btnDropCommitments').click(function(e) {
+		if(confirm("Sicher?")) {
+			$.ajax({
+				method: "post",
+				url: "/admin/deletecommitments"
+			}).done(function() {
+				document.location.reload();
+			});
+		}
+	});
 });

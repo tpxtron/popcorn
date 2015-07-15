@@ -33,6 +33,7 @@
 				{% endfor %}
 				</tbody>
 			</table>
+			<hr />
 			<h1>Flop 10</h1>
 			<table class="table table-striped">
 				<thead>
@@ -56,6 +57,30 @@
 				{% endfor %}
 				</tbody>
 			</table>
+			<hr />
+			<h1>Zusagen</h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th width="5%">Nr.</th>
+						<th width="55%">Email</th>
+						<th width="40%">Timestamp</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for commitment in commitments %}
+					<tr>
+						<td align="right">{{ loop.index }}</td>
+						<td>{{ commitment.email }}</td>
+						<td>{{ commitment.timestamp|date("d.m.Y H:i:s") }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<div class="text-center">
+				<button id="btnDropCommitments" class="btn btn-danger">Alle Zusagen löschen</button>
+			</div>
+			<hr />
 			<h1>Users</h1>
 			<table class="table table-striped">
 				<thead>
