@@ -13,6 +13,9 @@
 			{% if success == "setDate" %}
 				<div class="alert alert-success">Datum gespeichert!</div>
 			{% endif %}
+			{% if success == "setNextMovie" %}
+				<div class="alert alert-success">Nächster Film gespeichert!</div>
+			{% endif %}
 
 			<form action="/admin" method="post" class="form-inline">
 				<input type="hidden" name="action" value="setDate" />
@@ -23,6 +26,27 @@
 				<label for="btn"></label>
 				<button class="btn btn-default" type="submit">Speichern!</button>
 			</form>
+			<hr/>
+			<form action="/admin" method="post" class="form">
+				<input type="hidden" name="action" value="setNextMovie" />
+				<strong>Nächster Film:</strong>
+				<div class="form-group">
+					<label for="title">Titel:</label>
+					<input type="text" name="title" placeholder="Titel" value="{{ nextMovie.title }}" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label for="title">Jahr:</label>
+					<input type="text" name="year" placeholder="Jahr" value="{{ nextMovie.year }}" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label for="title">IMDb ID:</label>
+					<input type="text" name="imdb_id" placeholder="IMDb ID" value="{{ nextMovie.imdb_id }}" class="form-control" />
+				</div>
+
+				<label for="btn"></label>
+				<button class="btn btn-default" type="submit">Speichern!</button>
+			</form>
+
 		</div>
 	</div>
 	<hr />

@@ -237,6 +237,15 @@ class db
 		return $res;
 	}
 
+	public function getAllCommitmentsSorted() {
+		$st = $this->db->prepare("SELECT `commitments`.`user_id` AS `user_id`, `commitments`.`timestamp` AS `timestamp`, `users`.`email` AS `email` FROM `commitments`, `users` WHERE `users`.`id`=`commitments`.`user_id` GROUP BY `commitments`.`id` ORDER BY `email` ASC");
+		$st->execute();
+
+		$res = $st->fetchAll();
+
+		return $res;
+	}
+
 	public function dropAllCommitments() {
 		$st = $this->db->prepare("DELETE FROM `commitments`");
 		$st->execute();

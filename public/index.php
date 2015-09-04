@@ -99,7 +99,7 @@ $app->post('/login', function() use ($app, $viewData, $db) {
 		if($db->isAdmin($res)) {
 			$_SESSION['is_admin'] = true;
 		}
-		header("location:/vote");
+		header("location:/dashboard");
 		die();
 	}
 });
@@ -147,8 +147,13 @@ $app->get('/vote', function() use($app, $viewData, $db) {
 	$viewData['movies'] = $db->getAllMovies();
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
+	$viewData['nextMovie'] = json_decode(file_get_contents(dirname(__FILE__)."/../movie.json"));
 	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['flop10movies'] = $db->getFlop10Movies();
 	$viewData['commitment'] = $db->hasCommitment($_SESSION['user']);
+	$viewData['voteEndDate'] = strtotime($viewData['nextDate']);
+	$viewData['voteEndDate'] = $viewData['voteEndDate'] - (60 * 60 * 24 * 4);
+
 	$app->render("vote.html.twig",$viewData);
 });
 $app->post('/vote', function() use($app, $viewData, $db) {
@@ -170,8 +175,13 @@ $app->post('/vote/suggest', function() use($app, $viewData, $db, $mailer) {
 	$viewData['movies'] = $db->getAllMovies();
 	$viewData['votes'] = $db->getAllVotesForUser($_SESSION['user']);
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
+	$viewData['nextMovie'] = json_decode(file_get_contents(dirname(__FILE__)."/../movie.json"));
 	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['flop10movies'] = $db->getFlop10Movies();
 	$viewData['commitment'] = $db->hasCommitment($_SESSION['user']);
+	$viewData['voteEndDate'] = strtotime($viewData['nextDate']);
+	$viewData['voteEndDate'] = $viewData['voteEndDate'] - (60 * 60 * 24 * 4);
+
 	$app->render("vote.html.twig",$viewData);
 });
 $app->post('/vote/commitment', function() use($app, $viewData, $db) {
@@ -185,6 +195,21 @@ $app->post('/vote/commitment', function() use($app, $viewData, $db) {
 		$db->removeCommitment($_SESSION['user']);
 	}
 });
+$app->get('/dashboard', function() use($app, $viewData, $db) {
+	if(!isset($_SESSION['user'])) {
+		header("location:/login");
+		die();
+	}
+	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
+	$viewData['nextMovie'] = json_decode(file_get_contents(dirname(__FILE__)."/../movie.json"));
+	$viewData['top10movies'] = $db->getTop10Movies();
+	$viewData['flop10movies'] = $db->getFlop10Movies();
+	$viewData['commitment'] = $db->hasCommitment($_SESSION['user']);
+	$viewData['commitments'] = $db->getAllCommitmentsSorted();
+	$viewData['voteEndDate'] = strtotime($viewData['nextDate']);
+	$viewData['voteEndDate'] = $viewData['voteEndDate'] - (60 * 60 * 24 * 4);
+	$app->render("dashboard.html.twig",$viewData);
+});
 
 $app->get('/admin', function() use ($app, $viewData, $db) {
 	if(!isset($_SESSION['is_admin'])) {
@@ -192,6 +217,7 @@ $app->get('/admin', function() use ($app, $viewData, $db) {
 		die();
 	}
 	$viewData['movies'] = $db->getAllMoviesWithStats();
+	$viewData['nextMovie'] = json_decode(file_get_contents(dirname(__FILE__)."/../movie.json"));
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$app->render("admin.html.twig",$viewData);
 });
@@ -243,8 +269,18 @@ $app->post('/admin', function() use ($app, $viewData, $db) {
 			file_put_contents(dirname(__FILE__)."/../date.txt",$_POST['date']);
 			$viewData['success'] = 'setDate';
 			break;
+		case 'setNextMovie':
+			$data = array(
+				'title' => $_POST['title'],
+				'year' => $_POST['year'],
+				'imdb_id' => $_POST['imdb_id']
+			);
+			file_put_contents(dirname(__FILE__)."/../movie.json",json_encode($data));
+			$viewData['success'] = 'setNextMovie';
+			break;
 	}
 	$viewData['movies'] = $db->getAllMoviesWithStats();
+	$viewData['nextMovie'] = json_decode(file_get_contents(dirname(__FILE__)."/../movie.json"));
 	$viewData['nextDate'] = file_get_contents(dirname(__FILE__)."/../date.txt");
 	$app->render("admin.html.twig",$viewData);
 });
